@@ -3,17 +3,14 @@ import Init
 
 namespace AnalysisTao.Chapter2_NaturalNumbers
 
--- Abstract Peano-style natural number type
-axiom PeanoNat : Type
-
 -- Axiom 2.1: Zero is a natural number
-axiom PeanoNat.zero : PeanoNat
-
--- Axiom 2.2: Successor function
-axiom PeanoNat.succ : PeanoNat → PeanoNat
+-- Axiom 2.2: If n is a natural number, then n++ is also a naturalnumber.
+inductive PeanoNat : Type where
+  | zero
+  | succ (n : PeanoNat)
 
 -- Axiom 2.3: Zero is not the successor of any number
-axiom PeanoNat.succ_ne_zero : ∀ n : PeanoNat, PeanoNat.succ n ≠ PeanoNat.zero
+axiom PeanoNat.succ_ne_zero : ∀ {n : PeanoNat}, PeanoNat.succ n ≠ PeanoNat.zero
 
 -- Axiom 2.4: Different natural numbers must have different successors
 axiom PeanoNat.succ_inj : ∀ {n m : PeanoNat}, PeanoNat.succ n = PeanoNat.succ m → n = m
@@ -52,6 +49,6 @@ theorem six_ne_two : (6 : PeanoNat) ≠ (2 : PeanoNat) := by
   have eq_4_0 : (4 : PeanoNat) = 0 := PeanoNat.succ_inj h_succ4_zero_succ
   have h₄ : 4 = PeanoNat.succ 3 := rfl
   rw[h₄] at eq_4_0
-  exact (PeanoNat.succ_ne_zero 3 eq_4_0)
+  exact (PeanoNat.succ_ne_zero eq_4_0)
 
 end AnalysisTao.Chapter2_NaturalNumbers
