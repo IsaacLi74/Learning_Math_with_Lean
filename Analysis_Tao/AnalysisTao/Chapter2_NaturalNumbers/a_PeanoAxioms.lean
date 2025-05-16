@@ -23,6 +23,8 @@ axiom PeanoNat.induction {P : PeanoNat → Prop}
   (hbase : P PeanoNat.zero)(hind  : ∀ {n : PeanoNat}, P n → P (PeanoNat.succ n))
   : ∀ n, P n
 
+#check PeanoNat.induction
+
 -- Numeric support for PeanoNat
 noncomputable instance : OfNat PeanoNat 0 := ⟨PeanoNat.zero⟩
 noncomputable instance : OfNat PeanoNat 1 := ⟨PeanoNat.succ 0⟩
@@ -32,7 +34,9 @@ noncomputable instance : OfNat PeanoNat 4 := ⟨PeanoNat.succ 3⟩
 noncomputable instance : OfNat PeanoNat 5 := ⟨PeanoNat.succ 4⟩
 noncomputable instance : OfNat PeanoNat 6 := ⟨PeanoNat.succ 5⟩
 
--- Proposition 2.1.8: 6 is not equal to 2.
+#check PeanoNat.succ_inj
+
+-- Proposition 2.1.8
 theorem six_ne_two : (6 : PeanoNat) ≠ (2 : PeanoNat) := by
   have h₆ : PeanoNat.succ 5 = 6 := rfl
   have h₂ : PeanoNat.succ 1 = 2 := rfl
