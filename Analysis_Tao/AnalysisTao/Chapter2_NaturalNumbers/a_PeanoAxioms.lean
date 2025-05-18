@@ -1,6 +1,3 @@
-prelude
-import Init
-
 namespace AnalysisTao.Chapter2_NaturalNumbers
 
 -- Axiom 2.1: Zero is a natural number
@@ -23,7 +20,14 @@ axiom PeanoNat.induction {P : PeanoNat → Prop}
   (hbase : P PeanoNat.zero)(hind  : ∀ {n : PeanoNat}, P n → P (PeanoNat.succ n))
   : ∀ n, P n
 
-#check PeanoNat.induction
+-- Example theorem
+theorem succ_ne {a: PeanoNat} : a.succ ≠ a := by
+  induction a using PeanoNat.induction
+  case hbase =>
+    apply PeanoNat.succ_ne_zero
+  case hind d hn =>
+    apply PeanoNat.succ_inj'
+    exact hn
 
 -- Numeric support for PeanoNat
 noncomputable instance : OfNat PeanoNat 0 := ⟨PeanoNat.zero⟩
@@ -33,8 +37,6 @@ noncomputable instance : OfNat PeanoNat 3 := ⟨PeanoNat.succ 2⟩
 noncomputable instance : OfNat PeanoNat 4 := ⟨PeanoNat.succ 3⟩
 noncomputable instance : OfNat PeanoNat 5 := ⟨PeanoNat.succ 4⟩
 noncomputable instance : OfNat PeanoNat 6 := ⟨PeanoNat.succ 5⟩
-
-#check PeanoNat.succ_inj
 
 -- Proposition 2.1.8
 theorem six_ne_two : (6 : PeanoNat) ≠ (2 : PeanoNat) := by
@@ -54,5 +56,14 @@ theorem six_ne_two : (6 : PeanoNat) ≠ (2 : PeanoNat) := by
   have h₄ : 4 = PeanoNat.succ 3 := rfl
   rw[h₄] at eq_4_0
   exact (PeanoNat.succ_ne_zero eq_4_0)
+
+-- Example theorem
+theorem ne_succ {a: PeanoNat} (hab : a ≠ 0): ∃ c, PeanoNat.succ c = a := by
+  induction a using PeanoNat.induction
+  case hbase =>
+    contradiction
+  case hind b hn =>
+    apply Exists.intro b
+    rfl
 
 end AnalysisTao.Chapter2_NaturalNumbers
