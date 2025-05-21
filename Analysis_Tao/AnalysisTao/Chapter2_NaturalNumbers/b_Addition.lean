@@ -1,9 +1,12 @@
 import Std.Classes
+import Std.Tactic
+
 import AnalysisTao.Chapter2_NaturalNumbers.a_PeanoAxioms
 
 namespace AnalysisTao.Chapter2_NaturalNumbers
 
 open PeanoNat
+open Classical
 
 --Definition 2.2.1 (Addition of natural numbers).
 @[simp]
@@ -279,7 +282,33 @@ theorem lt_iff_add_pos {a b : PeanoNat} : (a < b) ↔ ∃ d, positive d ∧ add 
 
 --lemma
 theorem dichotomy (a b : PeanoNat) : (a ≤ b) ∨ (a ≥ b) := by
-  sorry
+  induction b using PeanoNat.induction
+  case hbase =>
+    right
+    dsimp [ge, add]
+    apply Exists.intro a
+    rfl
+  case hind c ih =>
+    dsimp [ge] at ih
+    cases ih with
+    | inl h₁ =>
+      left
+      rcases h₁ with ⟨p, hp⟩
+      apply Exists.intro p.succ
+      rw[add_succ,hp]
+    | inr h₂ =>
+      rcases h₂ with ⟨q, hq⟩
+      cases q with
+      | zero =>
+        rw[add_zero] at hq
+        left
+        exists zero.succ
+        rw[add_succ,add_zero,hq]
+      | succ r =>
+        rw[add_succ] at hq
+        right
+        apply Exists.intro r
+        apply hq
 
 -- Proposition 2.2.13 (Trichotomy of order for natural numbers).
 theorem trichotomy (a b : PeanoNat) : (a < b) ∨ (a = b) ∨ (a > b) := by
@@ -308,9 +337,65 @@ theorem trichotomy (a b : PeanoNat) : (a < b) ∨ (a = b) ∨ (a > b) := by
       apply Or.inr (Or.inr hab')
 
 -- Proposition 2.2.14 (Strong principle of induction).
-theorem strong_induction{m m₀ : PeanoNat} {P  : PeanoNat → Prop}
-  (hbase : P m₀) (hstep : ∀ m, (∀ k, (k < m) → P k) → P m)
+theorem strong_induction{m₀ : PeanoNat} {P  : PeanoNat → Prop}
+  (hbase : P m₀) (hstep : (∀ (m : PeanoNat), (m ≥ m₀) → (∀ k, (m₀ ≤ k) ∧ (k < m) → P k) → P m))
   : ∀ m, (m ≥ m₀) → P m := by
-  sorry
+  let Q : PeanoNat → Prop := fun n => ∀ k, (k < n.succ) → P (add k m₀)
+  have Q_base : Q zero := by
+    dsimp [Q]
+    intro k hk
+    have hk' : k ≤ zero := succ_ge_succ.mpr ((lt_iff_succ_ge k zero.succ).mp hk)
+    have hzero: k = zero := ge_antisymm (Pnat_ge_zero k) hk'
+    rw[hzero]
+    dsimp[add]
+    apply hbase
+  have Q_step : ∀ m, Q m → Q (succ m) := by
+    intro d Qd k hk
+    have hsplit : (k = d.succ) ∨ (k < d.succ) := by
+      have h_tri: (k < d.succ) ∨ (k = d.succ) ∨ (k > d.succ) := trichotomy k d.succ
+      cases h_tri with
+      | inl h_lt =>
+        apply Or.inr h_lt
+      | inr h_ge =>
+        cases h_ge with
+        | inl h_eq =>
+          apply Or.inl h_eq
+        | inr h_gt =>
+          dsimp[gt] at hk
+          have h_gt': d.succ.succ ≤ k := (lt_iff_succ_ge d.succ k).mp h_gt
+          have hk': k ≤ d.succ.succ := hk.1
+          have hkd: d.succ.succ = k := (ge_antisymm h_gt' hk').symm
+          have hkd': ¬d.succ.succ = k := hk.2
+          contradiction
+    dsimp[Q] at Qd
+    cases hsplit with
+    | inl h_eq =>
+      rw[h_eq]
+      dsimp
+      apply hstep
+      · rw[← add_succ]
+        dsimp[ge]
+        apply Exists.intro d.succ
+        rw[add_succ,add_succ,add_comm]
+      · intro i hi
+        rcases hi with ⟨hi_ge, hi_lt⟩
+        sorry
+    | inr h_lt =>
+      apply Qd k h_lt
+  have Q_all : ∀ (n:PeanoNat), Q n :=by
+    intro n
+    induction n using PeanoNat.induction
+    case hbase =>
+      exact Q_base
+    case hind m ih =>
+      exact Q_step m ih
+  dsimp[Q] at Q_all
+  intro m h
+  rcases h with ⟨p, rfl⟩
+  rw[add_comm]
+  apply Q_all p p
+  apply succ_gt
+
+-- exercise: pick some theorems by your own and prove them
 
 end AnalysisTao.Chapter2_NaturalNumbers
