@@ -336,6 +336,23 @@ theorem trichotomy (a b : PeanoNat) : (a < b) ∨ (a = b) ∨ (a > b) := by
           contradiction
       apply Or.inr (Or.inr hab')
 
+--lemma
+theorem add_lt_add (a b c: PeanoNat) : (a < b) ↔ (add c a < add c b) := by
+  constructor
+  · intro hab
+    rcases (lt_iff_add_pos.mp hab) with ⟨d, hd, hb⟩
+    apply lt_iff_add_pos.mpr
+    apply Exists.intro d
+    apply And.intro hd
+    rw [add_assoc,hb]
+  · intro h_add_ab
+    rcases (lt_iff_add_pos.mp h_add_ab) with ⟨d, hd, h_eq⟩
+    apply lt_iff_add_pos.mpr
+    apply Exists.intro d
+    apply And.intro hd
+    rw [add_assoc] at h_eq
+    apply add_left_cancel h_eq
+
 -- Proposition 2.2.14 (Strong principle of induction).
 theorem strong_induction{m₀ : PeanoNat} {P  : PeanoNat → Prop}
   (hbase : P m₀) (hstep : (∀ (m : PeanoNat), (m ≥ m₀) → (∀ k, (m₀ ≤ k) ∧ (k < m) → P k) → P m))
@@ -378,8 +395,12 @@ theorem strong_induction{m₀ : PeanoNat} {P  : PeanoNat → Prop}
         apply Exists.intro d.succ
         rw[add_succ,add_succ,add_comm]
       · intro i hi
-        rcases hi with ⟨hi_ge, hi_lt⟩
-        sorry
+        rcases hi with ⟨hi_ge_m0, hi_lt_m⟩
+        rcases hi_ge_m0 with ⟨ai, hi_eq⟩
+        rw [← hi_eq,add_comm,← add_succ] at hi_lt_m
+        have h_ai_lt_dsucc : ai < d.succ := (add_lt_add ai d.succ m₀).mpr hi_lt_m
+        rw [← hi_eq,add_comm]
+        apply Qd ai h_ai_lt_dsucc
     | inr h_lt =>
       apply Qd k h_lt
   have Q_all : ∀ (n:PeanoNat), Q n :=by
