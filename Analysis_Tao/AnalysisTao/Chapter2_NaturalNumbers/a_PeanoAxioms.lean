@@ -66,4 +66,6 @@ theorem ne_succ {a: PeanoNat} (hab : a ≠ 0): ∃ c, PeanoNat.succ c = a := by
     apply Exists.intro b
     rfl
 
+-- exercise: pick some theorems by your own and prove them!
+
 end AnalysisTao.Chapter2_NaturalNumbers

@@ -417,6 +417,6 @@ theorem strong_induction{m₀ : PeanoNat} {P  : PeanoNat → Prop}
   apply Q_all p p
   apply succ_gt
 
--- exercise: pick some theorems by your own and prove them
+-- exercise: pick some theorems by your own and prove them!
 
 end AnalysisTao.Chapter2_NaturalNumbers
