@@ -1,4 +1,4 @@
-namespace AnalysisTao.Chapter2_NaturalNumbers
+namespace Chapter2
 
 -- Axiom 2.1: Zero is a natural number
 -- Axiom 2.2: If n is a natural number, then n++ is also a naturalnumber.
@@ -68,4 +68,4 @@ theorem ne_succ {a: PeanoNat} (hab : a ≠ 0): ∃ c, PeanoNat.succ c = a := by
 
 -- exercise: pick some theorems by your own and prove them!
 
-end AnalysisTao.Chapter2_NaturalNumbers
+end Chapter2

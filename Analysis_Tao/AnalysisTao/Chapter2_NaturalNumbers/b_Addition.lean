@@ -3,7 +3,7 @@ import Std.Tactic
 
 import AnalysisTao.Chapter2_NaturalNumbers.a_PeanoAxioms
 
-namespace AnalysisTao.Chapter2_NaturalNumbers
+namespace Chapter2
 
 open PeanoNat
 open Classical
@@ -419,4 +419,4 @@ theorem strong_induction{m₀ : PeanoNat} {P  : PeanoNat → Prop}
 
 -- exercise: pick some theorems by your own and prove them!
 
-end AnalysisTao.Chapter2_NaturalNumbers
+end Chapter2

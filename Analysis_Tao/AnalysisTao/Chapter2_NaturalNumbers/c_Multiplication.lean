@@ -4,7 +4,7 @@ import Std.Tactic
 import AnalysisTao.Chapter2_NaturalNumbers.a_PeanoAxioms
 import AnalysisTao.Chapter2_NaturalNumbers.b_Addition
 
-namespace AnalysisTao.Chapter2_NaturalNumbers
+namespace Chapter2
 
 open PeanoNat
 open Classical
@@ -155,4 +155,4 @@ def pow : PeanoNat → PeanoNat → PeanoNat
 
 -- exercise: pick some theorems by your own and prove them!
 
-end AnalysisTao.Chapter2_NaturalNumbers
+end Chapter2
